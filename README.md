@@ -23,8 +23,3 @@
 * Zen browser
 
 ***Except for Floorp, value of `xpinstall.signatures.required` have to set `false` in `about:config`.***
-
-# Demo
-[!](https://github.com/user-attachments/assets/be6557af-c2df-467e-b2ab-c175594e66d1)
-
-
