@@ -19,7 +19,7 @@
 
 ## Tested browsers
 
-- **Floorp** â€” recommended
+- **Floorp** — recommended
 - Firefox Nightly
 - Firefox Developer Edition
 - LibreWolf
