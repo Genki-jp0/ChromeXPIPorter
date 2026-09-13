@@ -13,10 +13,9 @@
             <div class="subtitle">Complete guide for disabling signature verification in standard Firefox</div>
         </div>
         
-        <div class="content">
+        <main class="content" id="guide">
             In the regular version of Firefox, setting <code>xpinstall.signatures.required</code> to false does not work correctly.<br>
             This document explains how to disable this restriction.
-        </div>
             <div class="step">
                 <h3>1. Identify the path of omni.ja</h3>
                 <p><code>omni.ja</code> is located in the Firefox installation directory.</p>
@@ -48,13 +47,14 @@
                 
                 <p>This allows you to disable signature verification in the regular version of Firefox based on the value of <code>xpinstall.signatures.required</code>.</p>
             </div>
-        </div>
+        </main>
         
         <div class="navigation">
-            <div class="nav-links">
+            <nav class="nav-links" aria-label="Documentation navigation">
+                <a href="../dashboard.html">← Manage Your Extensions</a>
                 <a href="GettingStarted.html">← Back to Getting Started</a>
                 <a href="Android.html">Android Tutorial →</a>
-            </div>
+            </nav>
         </div>
     </div>
 </body>

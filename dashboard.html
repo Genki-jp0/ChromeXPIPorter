@@ -3,106 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRX Installer Dashboard</title>
+    <meta name="color-scheme" content="light dark">
+    <title>Add-ons Manager — CRX Installer</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.png" type="image/png">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>CRX Installer</h1>
-            <p>Manage installed extensions</p>
-        </div>
-        
-        <div class="content">
-            <div class="section">
-                <h2>Installed Extensions</h2>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Current Version</th>
-                                <th>Latest Version</th>
-                                <th>Source</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="installed">
-                            <!-- Extensions will be populated here by JavaScript -->
-                        </tbody>
-                    </table>
-                    <div id="empty-state" class="empty-state" style="display: none;">
-                        <div class="empty-state-icon">📦</div>
-                        <h3>No Extensions Found</h3>
-                        <p>Install some extensions to get started with CRX Installer</p>
-                    </div>
-                </div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div id="full">
+        <aside id="sidebar" aria-label="CRX Installer navigation">
+            <nav id="categories" aria-label="Add-on categories">
+                <a class="category" href="#extensions" data-view="extensions" aria-label="Extensions" title="Extensions" aria-current="page"><span class="nav-icon extension-icon" aria-hidden="true"></span><span class="category-name">Extensions</span></a>
+                <a class="category" href="#settings" data-view="settings" aria-label="Settings" title="Settings"><span class="nav-icon settings-icon" aria-hidden="true"></span><span class="category-name">Settings</span></a>
+            </nav>
+            <div class="spacer"></div>
+            <div class="sidebar-footer">
+                <p class="product-name">CRX Installer</p>
+                <a class="category footer-link" href="#help" data-view="help" aria-label="Add-ons Support" title="Add-ons Support"><span class="nav-icon help-icon" aria-hidden="true"></span><span class="category-name">Add-ons Support</span></a>
             </div>
-            
-            <div class="section">
-                <div class="file-upload-section">
-                    <h3>Install Manually from File</h3>
-                    <p>Select a compatible extension file to install</p>
-                    <div class="file-input-wrapper">
-                        <input id="file" type="file" class="file-input" accept=".crx,.zip">
-                        <label for="file" class="file-input-button">
-                            Choose File
-                        </label>
-                    </div>
+        </aside>
+        <div id="content">
+            <header id="page-header" class="sticky-container">
+                <div class="main-search">
+                    <label for="search-addons" class="search-label">Find an extension</label>
+                    <div class="search-box"><input id="search-addons" type="search" placeholder="Search installed extensions" autocomplete="off" aria-controls="installed"><span class="search-icon" aria-hidden="true"></span></div>
                 </div>
-            </div>
-
-            <div class="section">
-                <h2>Settings</h2>
-                <div class="settings-container">
-                    <div class="setting-item">
-                        <label class="setting-label">
-                            <input type="checkbox" id="downloadWithoutInstalling" class="setting-checkbox">
-                            <span class="setting-text">Download without installing directly</span>
-                        </label>
-                        <p class="setting-description">When enabled, the extension will be downloaded directly without showing the installation popup.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>Documentation & Help</h2>
-                <div class="docs-container">
-                    <div class="doc-card">
-                        <div class="doc-icon">📚</div>
-                        <div class="doc-content">
-                            <h3>Getting Started</h3>
-                            <p>Learn how to set up and use CRX Installer</p>
-                            <a href="docs/GettingStarted.html" class="doc-link" target="_blank">
-                                Read Guide →
-                            </a>
+                <div class="main-heading">
+                    <h1 id="page-title">Manage Your Extensions</h1>
+                    <details class="options-menu page-options-menu" id="page-tools">
+                        <summary class="more-options-button tools-button" aria-label="Tools for all extensions" title="Tools for all extensions"><span class="nav-icon settings-icon" aria-hidden="true"></span></summary>
+                        <div class="menu-panel">
+                            <button id="refresh" type="button">Check for Updates</button>
+                            <div class="menu-separator"></div>
+                            <div class="file-input-wrapper">
+                                <input id="file" type="file" accept=".crx,.zip" aria-describedby="file-hint file-status">
+                                <label for="file">Install Add-on From File…</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="doc-card">
-                        <div class="doc-icon">🔧</div>
-                        <div class="doc-content">
-                            <h3>Regular Firefox Guide</h3>
-                            <p>Make it work with non-Nightly builds of Firefox</p>
-                            <a href="docs/RegularFirefox.html" class="doc-link" target="_blank">
-                                Firefox Setup →
-                            </a>
-                        </div>
-                    </div>
-                    <div class="doc-card">
-                        <div class="doc-icon">📱</div>
-                        <div class="doc-content">
-                            <h3>Android Guide</h3>
-                            <p>Make it work with Android FF</p>
-                            <a href="docs/Android.html" class="doc-link" target="_blank">
-                                Android Guide →
-                            </a>
-                        </div>
-                    </div>
+                    </details>
                 </div>
-            </div>
+            </header>
+            <main id="main" tabindex="-1">
+                <p id="file-status" class="message-bar" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+                <p id="action-status" class="message-bar" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+                <section id="register" data-page="extensions" aria-labelledby="page-title" aria-busy="true">
+                    <p class="scope-note">Extensions installed through CRX Installer<span aria-hidden="true"> · </span><span id="extension-count">—</span></p>
+                    <p id="auto-update-summary" class="message-bar" role="status" aria-live="polite" hidden></p>
+                    <p id="list-status" class="message-bar" role="status">Loading your extensions…</p>
+                    <div id="installed">
+                        <section id="enabled-section" class="extension-section" aria-labelledby="enabled-title" hidden><h2 id="enabled-title" class="list-section-heading">Enabled</h2><div id="enabled-list"></div></section>
+                        <section id="disabled-section" class="extension-section" aria-labelledby="disabled-title" hidden><h2 id="disabled-title" class="list-section-heading">Disabled</h2><div id="disabled-list"></div></section>
+                    </div>
+                    <div id="empty-state" class="empty-state card" hidden><span class="empty-icon extension-icon" aria-hidden="true"></span><h2>You don’t have any extensions here yet.</h2><p>Install an extension from the Chrome Web Store, or choose a CRX or ZIP file.</p><button class="primary-button" id="empty-install" type="button">Install Add-on From File…</button></div>
+                    <p id="no-results" class="empty-state card" role="status" hidden>No extensions match your search.</p>
+                    <p class="view-footer">To enable or disable extensions, use Firefox’s <strong>about:addons</strong> page.</p>
+                </section>
+                <section id="settings-pane" data-page="settings" aria-labelledby="page-title" hidden>
+                    <h2 class="list-section-heading">Extension updates</h2>
+                    <div class="card settings-card">
+                        <label class="setting-label" for="autoUpdateExtensions"><input type="checkbox" id="autoUpdateExtensions" aria-describedby="auto-update-description auto-update-setting-status" disabled><span>Automatically check and prepare updates</span></label>
+                        <p id="auto-update-description" class="setting-description">Check Chrome Web Store extensions at your chosen interval and when Firefox starts. Download and convert newer versions automatically. Firefox requires your confirmation to install each prepared update. Manual imports require a new file.</p>
+                        <p id="auto-update-setting-status" role="status" aria-live="polite" hidden></p>
+                        <form id="update-interval-form" class="update-interval-form">
+                            <label for="update-interval-value">Check every</label>
+                            <div class="interval-controls">
+                                <input id="update-interval-value" type="number" min="1" max="720" step="1" value="6" required disabled aria-describedby="update-interval-hint update-interval-status">
+                                <select id="update-interval-unit" aria-label="Update interval unit" disabled>
+                                    <option value="1">Minutes</option>
+                                    <option value="60" selected>Hours</option>
+                                    <option value="1440">Days</option>
+                                </select>
+                                <button id="save-update-interval" type="submit" disabled>Save Interval</button>
+                            </div>
+                            <p id="update-interval-hint">Choose 1 minute to 30 days using whole numbers. Default: 6 hours. Startup checks still run.</p>
+                            <p id="update-interval-status" role="status" aria-live="polite" hidden></p>
+                        </form>
+                        <button id="check-updates-now" type="button">Check for Updates Now</button>
+                    </div>
+                    <h2 class="list-section-heading">Installation</h2>
+                    <div class="card settings-card">
+                        <label class="setting-label" for="downloadWithoutInstalling"><input type="checkbox" id="downloadWithoutInstalling" aria-describedby="setting-description setting-status" disabled><span>Download without installing directly</span></label>
+                        <p id="setting-description">For Chrome Web Store installs, download the XPI file instead of opening the installation prompt.</p>
+                        <p id="setting-status" role="status" aria-live="polite" hidden></p>
+                    </div>
+                    <h2 class="list-section-heading">Install from a file</h2>
+                    <div class="card settings-card"><p id="file-hint">Choose a Chrome extension in .crx or .zip format. CRX Installer prepares it for Firefox.</p><button id="settings-install" type="button">Install Add-on From File…</button></div>
+                </section>
+                <section id="help-pane" data-page="help" aria-labelledby="page-title" hidden>
+                    <h2 class="list-section-heading">Documentation</h2>
+                    <nav class="help-list" aria-label="Setup guides">
+                        <a class="card help-card" href="docs/GettingStarted.html"><strong>Getting Started</strong><span>Supported browsers and first steps</span></a>
+                        <a class="card help-card" href="docs/RegularFirefox.html"><strong>Regular Firefox</strong><span>Setup for non-Nightly builds</span></a>
+                        <a class="card help-card" href="docs/Android.html"><strong>Firefox on Android</strong><span>Download and install on mobile</span></a>
+                    </nav>
+                </section>
+            </main>
         </div>
     </div>
-
     <script type="module" src="./dashboard.js"></script>
 </body>
 </html>

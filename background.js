@@ -1,10 +1,22 @@
 import {patchExt} from  "/patchExt.js"
+import {runUpdateCheck, configureAutoUpdates} from "/autoUpdates.js"
 
 chrome.action.onClicked.addListener(() => {
     chrome.tabs.create({url: "dashboard.html"})
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.type === 'UPDATES_RUN' || request.type === 'UPDATES_CONFIGURE') {
+        const dashboard = chrome.runtime.getURL('dashboard.html')
+        if (sender.id !== chrome.runtime.id || sender.url?.split(/[?#]/)[0] !== dashboard) return false
+        if (request.type === 'UPDATES_RUN') {
+            runUpdateCheck(true).catch(error => console.error('Update check failed:', error))
+            sendResponse({ok: true})
+        } else {
+            configureAutoUpdates().then(() => sendResponse({ok: true}), error => sendResponse({ok: false, error: error.message}))
+        }
+        return true
+    }
     request.type == "getCWS" && getCWS(sender.tab.url).then(xpi => sendResponse(xpi))
     request.type == "isInstalledCWS" && isInstalledCWS(sender.tab.url).then(bool => sendResponse(bool))
     request.type == "uninstall" && uninstallCWS(sender.tab.url)
@@ -13,21 +25,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 })
 
 chrome.management.onInstalled.addListener(async ext => {
-    if(ext.id.endsWith("_CRXInstaller")){
+    if((typeof ext === "string" ? ext : ext.id)?.endsWith("_CRXInstaller")){
         let tabs = await chrome.tabs.query({active: true, currentWindow: true});
         let currentTab = tabs[0];
-        if(currentTab.url.includes("chromewebstore.google.com")) {
-            chrome.tabs.reload();
+        if(currentTab?.url?.includes("chromewebstore.google.com")) {
+            chrome.tabs.reload(currentTab.id);
         }
     }
 })
 
 chrome.management.onUninstalled.addListener(async ext => {
-    if(ext.id.endsWith("_CRXInstaller")){
+    if((typeof ext === "string" ? ext : ext.id)?.endsWith("_CRXInstaller")){
         let tabs = await chrome.tabs.query({active: true, currentWindow: true});
         let currentTab = tabs[0];
-        if(currentTab.url.includes("chromewebstore.google.com")) {
-            chrome.tabs.reload();
+        if(currentTab?.url?.includes("chromewebstore.google.com")) {
+            chrome.tabs.reload(currentTab.id);
         }
     }
 })

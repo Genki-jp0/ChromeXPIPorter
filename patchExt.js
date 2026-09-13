@@ -1,4 +1,5 @@
 import "/libs/jszip.min.js"
+import {cacheArchiveIcon} from "/extensionIcons.js"
 function loadExtension(file){
     let zip = new JSZip()
     return zip.loadAsync(file)
@@ -184,7 +185,9 @@ export async function patchExt(file, extId, store){
     
     ext = await injectScripts(ext, needsOffscreenPolyfill)
     ext =  await patchManifest(ext, extId, store, needsOffscreenPolyfill)
-    return await ext.generateAsync({type: "arraybuffer"})
+    const result = await ext.generateAsync({type: "arraybuffer"})
+    await cacheArchiveIcon(ext)
+    return result
 }
 
 export { processServiceWorker }
