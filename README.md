@@ -1,27 +1,44 @@
 <p align="center">
-  <img width="180" src="./icon.png">
-  <h1 align="center">CRX Installer</h1>
-  <div align="center">Install Chrome extension to Floorp/Firefox Nightly/Librewolf</div>
+  <img src="./icon.png" width="180" alt="CRX Installer icon">
+</p>
+
+<h1 align="center">CRX Installer</h1>
+
+<p align="center">
+  Install Chrome extensions in Floorp, Firefox Nightly, and LibreWolf.
 </p>
 
 > [!CAUTION]
 > Installing untrusted extensions can pose a serious security risk.
-> Developer will not responsible for any damage caused by the user's actions.
-> Always act prudently and at your own risk.
+> The developer is not responsible for damage caused by the user's actions.
+> Proceed carefully and at your own risk.
 
 > [!IMPORTANT]
-> I recommend using this extension with the following supported browsers.
-> It will work with the regular version of Firefox, but additional steps are required.
+> Use one of the supported browsers listed below. Regular Firefox requires
+> additional steps because changing the signature preference alone is not enough.
 
-# Tested browsers
-* Floorp (Recommended)
-* Firefox Nightly
-* Firefox Developer Edition
-* Librewolf
-* Zen browser
+## Tested browsers
 
-***Except for Floorp, value of `xpinstall.signatures.required` have to set `false` in `about:config`.***
+- **Floorp** â€” recommended
+- Firefox Nightly
+- Firefox Developer Edition
+- LibreWolf
+- Zen Browser
 
-***DOES NOT WORK FOR REGULAR FIREFOX BECAUSE OF MOZ_REQUIRE_SIGNING COMPILER SETTING!!!***
-This litteraly means xpinstall.signatures.required is fucking ignored on non ESR, firefox android
-It is not ignored however on ESR, Developer Edition, Nightly
+## Signature verification
+
+Except for Floorp, set the following preference to `false` in `about:config`:
+
+```text
+xpinstall.signatures.required = false
+```
+
+### Regular Firefox and Firefox for Android
+
+> [!WARNING]
+> Setting `xpinstall.signatures.required` to `false` is insufficient in regular
+> Firefox builds, including regular Firefox for Android, when the build-time
+> `MOZ_REQUIRE_SIGNING` setting enforces signature verification.
+
+In these builds, the preference is ignored. Firefox ESR, Developer Edition,
+and Nightly allow the preference to control signature verification.
